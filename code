@@ -1,0 +1,28 @@
+#define ALCOHOL_SENSOR_PIN A0  // MQ-3 sensor connected to analog pin A0
+#define BUZZER_PIN 8           // Buzzer connected to digital pin D8
+#define RELAY_PIN 7            // Relay connected to digital pin D7
+#define ALCOHOL_THRESHOLD 400   // Threshold for alcohol detection (adjust based on testing)
+void setup() {
+  pinMode(ALCOHOL_SENSOR_PIN, INPUT); // Set the alcohol sensor pin as input
+  pinMode(BUZZER_PIN, OUTPUT);        // Set the buzzer pin as output
+  pinMode(RELAY_PIN, OUTPUT);         // Set the relay pin as output
+      digitalWrite(RELAY_PIN, LOW);       // Initialize relay off (engine on)
+  digitalWrite(BUZZER_PIN, LOW);      // Initialize buzzer off
+  Serial.begin(9600);                 // Begin serial communication for debugging
+}
+void loop() {
+  int sensorValue = analogRead(ALCOHOL_SENSOR_PIN);  // Read the MQ-3 sensor value
+  Serial.print("Alcohol Sensor Value: ");
+  Serial.println(sensorValue);                       // Print the sensor value for monitoring
+// Check if alcohol is detected above threshold level
+  if (sensorValue > ALCOHOL_THRESHOLD) {
+    digitalWrite(BUZZER_PIN, HIGH);   // Turn on the buzzer
+    digitalWrite(RELAY_PIN, HIGH);    // Activate relay to lock the engine
+    Serial.println("Alcohol Detected! Engine Locked!");
+  } else {
+    digitalWrite(BUZZER_PIN, LOW);    // Turn off the buzzer
+    digitalWrite(RELAY_PIN, LOW);     // Deactivate relay to unlock the engine
+    Serial.println("No Alcohol Detected. Engine Unlocked.");
+  }
+ delay(500);  // Wait for a short period before the next reading
+}
